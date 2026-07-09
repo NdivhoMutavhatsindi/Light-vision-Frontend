@@ -265,50 +265,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="section-padding bg-navy-gradient overflow-hidden">
-        <div className="container-luxury px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Client Stories"
-            title="What Our Clients Say"
-            subtitle="The trust and satisfaction of our clients is our greatest achievement."
-            light
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={t.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="glass rounded-2xl p-8"
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} size={14} className="text-gold-400 fill-gold-400" />
-                  ))}
-                </div>
-                <p className="text-gray-200 leading-relaxed mb-6 italic font-serif text-lg">
-                  "{t.text}"
-                </p>
-                <div className="flex items-center gap-4">
-                  <img
-                    src={t.image}
-                    alt={t.name}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-gold-500"
-                  />
-                  <div>
-                    <p className="font-semibold text-white">{t.name}</p>
-                    <p className="text-sm text-gray-400">{t.role}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Trust Brand Section */}
       <section className="section-padding">
         <div className="container-luxury">
