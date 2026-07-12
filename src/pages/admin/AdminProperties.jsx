@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, Edit2, Trash2, Eye, X, Upload, CheckCircle } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, Eye, X, Upload, CheckCircle, Share2 } from 'lucide-react';
 import DashboardHeader from '../../components/admin/DashboardHeader';
+import SharePropertyModal from '../../components/admin/SharePropertyModal';
 import {
   createProperty,
   deleteProperty,
@@ -310,6 +311,7 @@ export default function AdminProperties() {
   const [error, setError] = useState('');
   const [modal, setModal] = useState(null); // null | 'create' | property object
   const [deleteId, setDeleteId] = useState(null);
+  const [shareProperty, setShareProperty] = useState(null);
 
   const loadProperties = () => {
     setLoading(true);
@@ -405,6 +407,12 @@ export default function AdminProperties() {
                           <Edit2 size={13} />
                         </button>
                         <button
+                          onClick={() => setShareProperty(property)}
+                          className="w-7 h-7 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500 hover:text-green-600 hover:bg-green-50 transition-colors"
+                        >
+                          <Share2 size={13} />
+                        </button>
+                        <button
                           onClick={() => setDeleteId(property.property_id)}
                           className="w-7 h-7 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
                         >
@@ -430,6 +438,15 @@ export default function AdminProperties() {
             property={modal === 'create' ? null : modal}
             onClose={() => setModal(null)}
             onSaved={loadProperties}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {shareProperty && (
+          <SharePropertyModal
+            property={shareProperty}
+            onClose={() => setShareProperty(null)}
           />
         )}
       </AnimatePresence>
