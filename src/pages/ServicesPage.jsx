@@ -35,7 +35,10 @@ export default function ServicesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {services.map((service, i) => {
-              const Icon = iconComponents[service.icon] || Building2;
+              const iconName = service?.icon || 'Building2';
+              const Icon = iconComponents[iconName] || Building2;
+              const features = Array.isArray(service?.features) ? service.features : [];
+              const slug = service?.slug || 'contact';
               return (
                 <motion.div
                   key={service.id}
@@ -54,7 +57,7 @@ export default function ServicesPage() {
                       <h3 className="text-xl font-serif font-semibold text-navy-900 mb-2">{service.title}</h3>
                       <p className="text-gray-600 leading-relaxed mb-4">{service.description}</p>
                       <ul className="space-y-2 mb-5">
-                        {service.features.map((f) => (
+                        {features.map((f) => (
                           <li key={f} className="flex items-center gap-2 text-sm text-gray-600">
                             <div className="w-1.5 h-1.5 bg-gold-500 rounded-full flex-shrink-0" />
                             {f}
@@ -62,7 +65,7 @@ export default function ServicesPage() {
                         ))}
                       </ul>
                       <Link
-                        to={serviceLinks[service.slug] || '/contact'}
+                        to={serviceLinks[slug] || '/contact'}
                         className="inline-flex items-center gap-2 text-sm font-medium text-gold-600 hover:text-gold-700 transition-colors"
                       >
                         Learn More <ArrowRight size={14} />
