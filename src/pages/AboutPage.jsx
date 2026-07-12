@@ -99,38 +99,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
-      {/* Timeline */}
-      <section className="section-padding bg-gray-50">
-        <div className="container-luxury px-4 sm:px-6 lg:px-8">
-          <SectionHeading eyebrow="Our Journey" title="15 Years of Excellence" center />
-          <div className="relative">
-            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold-300 to-transparent hidden md:block" />
-            <div className="space-y-12">
-              {timeline.map((item, i) => (
-                <motion.div
-                  key={item.year}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className={`flex flex-col md:flex-row items-center gap-8 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
-                >
-                  <div className={`md:w-[calc(50%-2rem)] ${i % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                    <span className="text-5xl font-serif font-light text-gradient-gold block mb-2">{item.year}</span>
-                    <h3 className="text-xl font-serif font-semibold text-navy-900 mb-2">{item.title}</h3>
-                    <p className="text-gray-600">{item.desc}</p>
-                  </div>
-                  <div className="hidden md:flex w-16 h-16 rounded-full bg-navy-900 border-4 border-gold-500 items-center justify-center flex-shrink-0 z-10">
-                    <div className="w-3 h-3 bg-gold-400 rounded-full" />
-                  </div>
-                  <div className="md:w-[calc(50%-2rem)]" />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

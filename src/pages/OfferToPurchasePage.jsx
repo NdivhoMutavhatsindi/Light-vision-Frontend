@@ -17,7 +17,7 @@ export default function OfferToPurchasePage() {
 
   const handleDownload = () => {
     const link = document.createElement('a');
-    link.href = '/otp-form.pdf';
+    link.href = '/src/assets/OTP LIGHT VISION PROPERTY OTP (1).pdf';
     link.download = 'Light-Vision-Property-OTP-Form.pdf';
     link.target = '_blank';
     document.body.appendChild(link);

@@ -18,7 +18,12 @@ export default function PropertyCard({ property, index = 0 }) {
       {/* Image */}
       <div className="relative overflow-hidden aspect-[4/3]">
         <img
-          src={property.image}
+          src={
+            property.image ||
+            property.images?.find((img) => img.is_primary)?.image_url ||
+            property.images?.[0]?.image_url ||
+            '/images/property-placeholder.jpg'
+          }
           alt={property.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
           style={{ '--tw-scale-x': '1.08', '--tw-scale-y': '1.08' }}
