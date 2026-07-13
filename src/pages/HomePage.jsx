@@ -15,6 +15,8 @@ const iconMap = { Building2, TrendingUp, Award, Users };
 export default function HomePage() {
   const [featuredProperties, setFeaturedProperties] = useState([]);
   const [agents, setAgents] = useState([]);
+  const propertyRef = useRef(null);
+  const agentRef = useRef(null);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -33,6 +35,31 @@ export default function HomePage() {
 
     fetchProperties();
     fetchAgents();
+  }, []);
+
+  useEffect(() => {
+    const autoScroll = (ref) => {
+      if (!ref.current) return undefined;
+
+      const container = ref.current;
+      const interval = setInterval(() => {
+        if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+          container.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          container.scrollBy({ left: 390, behavior: 'smooth' });
+        }
+      }, 3500);
+
+      return () => clearInterval(interval);
+    };
+
+    const stopProperty = autoScroll(propertyRef);
+    const stopAgent = autoScroll(agentRef);
+
+    return () => {
+      stopProperty?.();
+      stopAgent?.();
+    };
   }, []);
 
   return (
@@ -110,21 +137,6 @@ export default function HomePage() {
                 Get Valuation
               </Link>
             </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex flex-wrap gap-8"
-            >
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <p className="text-3xl font-serif font-light text-gradient-gold">{stat.value}</p>
-                  <p className="text-sm text-gray-400 mt-0.5">{stat.label}</p>
-                </div>
-              ))}
-            </motion.div>
           </div>
         </div>
 
@@ -167,14 +179,17 @@ export default function HomePage() {
             title="Featured Properties"
             subtitle="Hand-selected properties that represent the pinnacle of luxury South African real estate."
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredProperties.map((property, i) => (
-              <PropertyCard
-                  key={property.property_id}
-                  property={property}
-                  index={i}
-              />
-            ))}
+          <div className="relative">
+            <div
+              ref={propertyRef}
+              className="flex gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide"
+            >
+              {featuredProperties.map((property, i) => (
+                <div key={property.property_id} className="flex-shrink-0 snap-start w-[380px]">
+                  <PropertyCard property={property} index={i} />
+                </div>
+              ))}
+            </div>
           </div>
           <div className="text-center mt-12">
             <Link to="/properties" className="btn-navy">
@@ -222,27 +237,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Stats Banner */}
-      <section className="py-20 bg-navy-gradient">
-        <div className="container-luxury px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center"
-              >
-                <p className="text-5xl font-serif font-light text-gradient-gold mb-2">{stat.value}</p>
-                <p className="text-gray-400 text-sm tracking-wide">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
  
       {/* Top Agents */}
       <section className="section-padding">
@@ -252,9 +246,14 @@ export default function HomePage() {
             title="Meet Our Agents"
             subtitle="Our team of luxury property specialists brings unparalleled expertise and dedication to every transaction."
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div
+            ref={agentRef}
+            className="flex gap-8 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 scrollbar-hide"
+          >
             {agents.map((agent, i) => (
-              <AgentCard key={agent.id} agent={agent} index={i} />
+              <div key={agent.id} className="flex-shrink-0 snap-start w-[320px]">
+                <AgentCard agent={agent} index={i} />
+              </div>
             ))}
           </div>
           <div className="text-center mt-12">

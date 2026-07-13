@@ -1,11 +1,61 @@
 import { motion } from 'framer-motion';
 import { Link } from '@tanstack/react-router';
-import { Bed, Bath, Car, Maximize2, Heart } from 'lucide-react';
+import { Bed, Bath, Heart, Home, KeyRound, Building2, Clock3, BadgeCheck, Tag } from 'lucide-react';
 import { useState } from 'react';
 import { formatPrice } from '../../data/mockData';
 
+const propertyStatus = {
+  for_sale: {
+    label: 'For Sale',
+    icon: Home,
+    className: 'bg-emerald-600 text-white',
+  },
+  for_rent: {
+    label: 'To Let',
+    icon: KeyRound,
+    className: 'bg-blue-600 text-white',
+  },
+  commercial: {
+    label: 'Commercial',
+    icon: Building2,
+    className: 'bg-indigo-700 text-white',
+  },
+  pending: {
+    label: 'Pending',
+    icon: Clock3,
+    className: 'bg-amber-500 text-white',
+  },
+  sold: {
+    label: 'Sold',
+    icon: BadgeCheck,
+    className: 'bg-red-600 text-white',
+  },
+  rented: {
+    label: 'Rented',
+    icon: KeyRound,
+    className: 'bg-cyan-600 text-white',
+  },
+  under_offer: {
+    label: 'Under Offer',
+    icon: BadgeCheck,
+    className: 'bg-purple-600 text-white',
+  },
+  price_adjusted: {
+    label: 'Price Reduced',
+    icon: Tag,
+    className: 'bg-orange-500 text-white',
+  },
+  default: {
+    label: 'Available',
+    icon: Home,
+    className: 'bg-gray-700 text-white',
+  },
+};
+
 export default function PropertyCard({ property, index = 0 }) {
   const [liked, setLiked] = useState(false);
+  const status = propertyStatus[property.status] || propertyStatus.default;
+  const StatusIcon = status.icon;
 
   return (
     <motion.div
@@ -31,12 +81,15 @@ export default function PropertyCard({ property, index = 0 }) {
         <div className="absolute inset-0 bg-gradient-to-t from-navy-900/40 to-transparent" />
 
         {/* Badges */}
-        <div className="absolute top-4 left-4 flex gap-2">
-          <span className={`text-xs font-semibold px-3 py-1 rounded-full ${property.status === 'available' ? 'bg-gold-500 text-white' : 'bg-navy-900 text-white'}`}>
-            {property.status === 'available' ? 'For Sale' : property.status}
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          <span
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold uppercase tracking-wider shadow-lg backdrop-blur-sm ${status.className}`}
+          >
+            {StatusIcon && <StatusIcon size={12} />}
+            {status.label}
           </span>
           {property.featured && (
-            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white text-navy-900">
+            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white text-navy-900 shadow-lg">
               Featured
             </span>
           )}

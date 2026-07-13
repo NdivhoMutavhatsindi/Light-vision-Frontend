@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useSearch } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { SlidersHorizontal, Grid3X3, List, ChevronDown, X, Building2Icon } from 'lucide-react';
+import { SlidersHorizontal, Grid3X3, List, X, Building2Icon } from 'lucide-react';
 import PageBanner from '../components/ui/PageBanner';
 import PropertyCard from '../components/ui/PropertyCard';
 import SearchBar from '../components/ui/SearchBar';
@@ -9,10 +10,11 @@ import { getProperties } from '../services/property.service.js';
 const sortOptions = ['Newest', 'Price: High to Low', 'Price: Low to High', 'Size: Largest'];
 
 export default function PropertiesPage() {
+  const routeSearch = useSearch({ from: '/properties' });
   const [view, setView] = useState('grid');
   const [sort, setSort] = useState('Newest');
-  const [filters, setFilters] = useState({ type: '', category: '', minBeds: '', maxPrice: '' });
-  const [search, setSearch] = useState('');
+  const [filters, setFilters] = useState({ type: routeSearch.type || '', category: routeSearch.category || '', minBeds: '', maxPrice: '' });
+  const [search, setSearch] = useState(routeSearch.query || '');
   const [showFilters, setShowFilters] = useState(false);
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,10 +36,26 @@ export default function PropertiesPage() {
     loadProperties();
   }, []);
 
+  useEffect(() => {
+    setSearch(routeSearch.query || '');
+    setFilters((current) => ({
+      ...current,
+      type: routeSearch.type || '',
+      category: routeSearch.category || '',
+    }));
+  }, [routeSearch.query, routeSearch.type, routeSearch.category]);
+
   const filtered = useMemo(() => {
     let result = [...properties];
-    
-    result = result.filter((p) => p.status === 'for_sale');
+
+    const requestedType = (filters.type || routeSearch.type || '').toLowerCase();
+    const requestedCategory = (filters.category || routeSearch.category || '').toLowerCase();
+
+    if (requestedType) {
+      result = result.filter((p) => (p.status || '').toLowerCase() === requestedType);
+    } else {
+      result = result.filter((p) => (p.status || '').toLowerCase() === 'for_sale');
+    }
 
     if (search) {
       result = result.filter(
@@ -46,11 +64,9 @@ export default function PropertiesPage() {
           p.location?.toLowerCase().includes(search.toLowerCase())
       );
     }
-    if (filters.type) result = result.filter((p) => p.type === filters.type);
-    if (filters.category) {
-      result = result.filter(
-        (p) => p.property_type === filters.category
-      );
+
+    if (requestedCategory) {
+      result = result.filter((p) => (p.property_type || '').toLowerCase() === requestedCategory);
     }
     if (filters.minBeds) result = result.filter((p) => p.bedrooms >= parseInt(filters.minBeds));
     if (filters.maxPrice) result = result.filter((p) => p.price <= parseInt(filters.maxPrice) * 1000000);
@@ -65,7 +81,7 @@ export default function PropertiesPage() {
     if (sort === 'Price: Low to High') result.sort((a, b) => a.price - b.price);
 
     return result;
-  }, [search, filters, sort, properties]);
+  }, [search, filters, sort, properties, routeSearch.type, routeSearch.category]);
 
   const paginated = filtered.slice(0, page * perPage);
 

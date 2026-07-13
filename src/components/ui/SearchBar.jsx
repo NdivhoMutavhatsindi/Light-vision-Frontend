@@ -1,21 +1,32 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { Search } from 'lucide-react';
 
 export default function SearchBar({ onSearch, variant = 'light' }) {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [type, setType] = useState('');
   const [category, setCategory] = useState('');
 
   const handleSearch = (e) => {
     e.preventDefault();
+
+    navigate({
+      to: '/properties',
+      search: {
+        query,
+        type,
+        category,
+      },
+    });
+
     if (onSearch) onSearch({ query, type, category });
   };
 
   const inputClass = variant === 'dark'
     ? 'bg-white/10 border-white/20 text-white placeholder-white/60 focus:border-gold-400'
     : 'bg-white border-gray-200 text-navy-900 placeholder-gray-400 focus:border-gold-500';
-
-  const labelClass = variant === 'dark' ? 'text-white/70' : 'text-gray-500';
 
   return (
     <form onSubmit={handleSearch} className="w-full">
@@ -39,9 +50,9 @@ export default function SearchBar({ onSearch, variant = 'light' }) {
           className={`border rounded-xl px-4 py-3.5 text-sm focus:outline-none transition-colors cursor-pointer ${inputClass} md:w-40`}
         >
           <option value="">All Types</option>
-          <option value="For Sale">For Sale</option>
-          <option value="To Let">To Let</option>
-          <option value="Commercial">Commercial</option>
+          <option value="for_sale">For Sale</option>
+          <option value="for_rent">To Let</option>
+          <option value="commercial">Commercial</option>
         </select>
 
         {/* Category select */}

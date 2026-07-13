@@ -56,7 +56,16 @@ const rootRoute = createRootRoute({
 
 // Public Routes
 const homeRoute = createRoute({ getParentRoute: () => rootRoute, path: '/', component: HomePage });
-const propertiesRoute = createRoute({ getParentRoute: () => rootRoute, path: '/properties', component: PropertiesPage });
+const propertiesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/properties',
+  validateSearch: (search) => ({
+    query: search.query ?? '',
+    type: search.type ?? '',
+    category: search.category ?? '',
+  }),
+  component: PropertiesPage,
+});
 const propertyDetailRoute = createRoute({ getParentRoute: () => rootRoute, path: '/properties/$id', component: PropertyDetailPage });
 const agentsRoute = createRoute({ getParentRoute: () => rootRoute, path: '/agents', component: AgentsPage });
 const agentDetailRoute = createRoute({ getParentRoute: () => rootRoute, path: '/agents/$id', component: AgentDetailPage });
